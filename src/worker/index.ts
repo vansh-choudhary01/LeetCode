@@ -4,7 +4,7 @@ import prisma from "../lib/prisma.js";
 import { runCode } from "../e2b/createSandbox.js";
 import { TestCase } from "../generated/prisma/client.js";
 
-function generateExecutableCode(functionName: string, language: string, code: string, testCases: TestCase) {
+function generateExecutableCode(functionName: string, language: string, code: string, testCases: TestCase[]) {
     switch (language) {
         case "ts":
             return `
@@ -54,7 +54,7 @@ getQueue().then((queue: Channel) => {
             console.log(msg.content.toString());
             const { language, code, functionName, probId, submissionId } = JSON.parse(msg.content.toString());
 
-            const tests = prisma.testCase.findMany({
+            const tests = await prisma.testCase.findMany({
                 where: {
                     problemId: probId
                 }
@@ -63,7 +63,7 @@ getQueue().then((queue: Channel) => {
             const executableCode = generateExecutableCode(functionName, language, code, tests)!;
 
 
-            const result = await runCode(language, executableCode);
+            const result = await runCode(executableCode);
             //EXECUTE USER CODE IN A SENDBOX AND UPDATE DB
 
             if (result.exitCode !== 0) {
@@ -72,7 +72,7 @@ getQueue().then((queue: Channel) => {
                         id: submissionId
                     },
                     data: {
-                        resultStatus: "Failed",
+                        resultStatus: false,
                         result: {
                             status: 'Failed',
                             pass: '0/0',
@@ -89,7 +89,7 @@ getQueue().then((queue: Channel) => {
                         id: submissionId
                     },
                     data: {
-                        resultStatus: final.status,
+                        resultStatus: final.status === "Accepted",
                         result: final
                     }
                 })

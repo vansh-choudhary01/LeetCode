@@ -105,9 +105,7 @@ router.post("/submission/:probId", async (req: Request, res: Response, next: Nex
         const body = req.body;
         const user = req.user;
 
-        if(!user){
-            return 
-        }
+        if (!user) return res.status(401).json({});
 
         const validateParams = paramValidator.safeParse(params);
         const validateBody = bodyValidator.safeParse(body);
@@ -154,7 +152,7 @@ router.post("/submission/:probId", async (req: Request, res: Response, next: Nex
 
         queue.sendToQueue(
             "tasks",
-            Buffer.from(JSON.stringify({ language, code, functionName: prob.functionName, probId, submissionI: submission.id })),
+            Buffer.from(JSON.stringify({ language, code, functionName: prob.functionName, probId, submissionId: submission.id })),
             { persistent: true }
         );
 
@@ -228,7 +226,6 @@ router.get("/submission/:subId", async (req: Request, res: Response, next: NextF
         const user = req.user;
 
         if (!user) return res.status(401).json({});
-
 
         const submission = prisma.submission.findFirst({
             where: {
