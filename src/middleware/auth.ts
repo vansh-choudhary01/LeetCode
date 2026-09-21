@@ -1,6 +1,6 @@
 import {type Request, type Response, type NextFunction} from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import prisma from "../lib/prisma";
+import prisma from "../lib/prisma.js";
 
 type AuthRequest = Request & {
     user?: any
@@ -34,6 +34,7 @@ export function authMiddleware(req: AuthRequest, res: Response, next: NextFuncti
     })
 
     req.user = user;
+    req.isAdmin = compare.role === 'admin';
 
     next();
 }

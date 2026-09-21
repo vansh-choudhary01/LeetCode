@@ -1,4 +1,4 @@
-import { getQueue } from "./connect";
+import { getQueue } from "./connect.js";
 
 function initializeQueue() {
   return getQueue();

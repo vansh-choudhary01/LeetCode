@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Submission" ALTER COLUMN "problemId" SET DATA TYPE TEXT,
+ALTER COLUMN "resultStatus" DROP NOT NULL,
+ALTER COLUMN "result" DROP NOT NULL;

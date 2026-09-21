@@ -1,6 +1,6 @@
 import { Router, type Request, type Response, type NextFunction } from "express";
 import z from "zod"
-import prisma from "../lib/prisma";
+import prisma from "../lib/prisma.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken"
 
@@ -38,7 +38,7 @@ router.post("/register", async (req: Request, res: Response, next: NextFunction)
             }
         });
 
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, { expiresIn: "7d" })
+        const token = jwt.sign({ id: user.id, role: 'user' }, process.env.JWT_SECRET as string, { expiresIn: "7d" })
 
         res.cookie("auth_token", token, {
             httpOnly: true,
@@ -82,7 +82,7 @@ router.post("/login", async (req: Request, res: Response, next: NextFunction) =>
             })
         }
 
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, { expiresIn: "7d" });
+        const token = jwt.sign({ id: user.id, role: 'user' }, process.env.JWT_SECRET as string, { expiresIn: "7d" });
 
         res.cookie("auth_token", token, {
             httpOnly: true,

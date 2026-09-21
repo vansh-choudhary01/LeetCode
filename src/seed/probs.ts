@@ -1,5 +1,5 @@
-import type { Prisma } from "../generated/prisma/client";
-import prisma from "../lib/prisma";
+import type { Prisma } from "../generated/prisma/client.js";
+import prisma from "../lib/prisma.js";
 
 const problems: Prisma.ProblemCreateInput[] = [
   {
@@ -18,6 +18,8 @@ const problems: Prisma.ProblemCreateInput[] = [
         },
       ],
     },
+    functionName: "sdajvh",
+    baseCode: ""
   },
   {
     title: "Valid Parentheses",
@@ -35,6 +37,8 @@ const problems: Prisma.ProblemCreateInput[] = [
         },
       ],
     },
+    functionName: "sdajvh",
+    baseCode: ""
   },
   {
     title: "Reverse String",
@@ -52,6 +56,8 @@ const problems: Prisma.ProblemCreateInput[] = [
         },
       ],
     },
+    functionName: "sdajvh",
+    baseCode: ""
   },
 ];
 
