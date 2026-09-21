@@ -1,4 +1,4 @@
-const amqplib = require('amqplib');
+import amqplib from 'amqplib';
 
 export async function getQueue() {
     const queueUrl = process.env.RABBITMQ_URL || 'amqp://localhost:5672';

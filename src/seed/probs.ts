@@ -1,5 +1,7 @@
 import type { Prisma } from "../generated/prisma/client.js";
 import prisma from "../lib/prisma.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const problems: Prisma.ProblemCreateInput[] = [
   {

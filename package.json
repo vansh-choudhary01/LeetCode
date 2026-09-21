@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed:probs": "tsx src/seed/probs.ts",
+    "seed:admin": "tsx src/seed/admin.ts",
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "start": "node src/index.js"
   },
   "type": "module",
   "keywords": [],

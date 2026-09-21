@@ -1,4 +1,6 @@
 import prisma from "../lib/prisma.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 async function seedAdmin() {
     if (!process.env.ADMIN_NAME || !process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD) {
