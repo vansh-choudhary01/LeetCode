@@ -34,7 +34,8 @@ router.post("/register", async (req: Request, res: Response, next: NextFunction)
             data: {
                 name,
                 email,
-                password: hashedPassword
+                password: hashedPassword,
+                role: "user"
             }
         });
 
@@ -44,8 +45,7 @@ router.post("/register", async (req: Request, res: Response, next: NextFunction)
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             maxAge: 24 * 60 * 60 * 1000
-        }
-        )
+        })
 
         return res.status(201).json({
             success: true,

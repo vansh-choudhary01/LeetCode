@@ -14,11 +14,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum user_type {
+    admin
+    user
+}
+
+
 model User {
   id    Int    @id @default(autoincrement())
   name  String
   email String @unique
   password String
+  role user_type
 }
 
 model Problem {

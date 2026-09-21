@@ -21,6 +21,11 @@ router.post("/login", async (req: Request, res: Response, next: NextFunction) =>
                 status: false,
                 message: "credentials incorrect"
             })
+        } else if (user.role !== "admin") {
+            return res.status(403).json({
+                status: false,
+                message: "403 Forbidden (Authorization Failed)"
+            })
         }
 
         const compare = await bcrypt.compare(password, user.password);
