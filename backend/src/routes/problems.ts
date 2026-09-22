@@ -56,7 +56,7 @@ const paramValidator = z.object({
     probId: z.string()
 });
 
-router.get("/:probId", (req: Request, res: Response, next: NextFunction) => {
+router.get("/:probId", async (req: Request, res: Response, next: NextFunction) => {
     try {
         const params = req.params;
 
@@ -71,7 +71,7 @@ router.get("/:probId", (req: Request, res: Response, next: NextFunction) => {
 
         const { probId } = validate.data;
 
-        const prob = prisma.problem.findFirst({
+        const prob = await prisma.problem.findFirst({
             where: {
                 id: parseInt(probId),
             },
@@ -188,7 +188,7 @@ router.get("/submission", async (req: Request, res: Response, next: NextFunction
 
         if (!user) return res.status(401).json({});
 
-        const submissions = prisma.submission.findMany({
+        const submissions = await prisma.submission.findMany({
             where: {
                 userId: user.id,
                 problemId: probId
@@ -227,7 +227,7 @@ router.get("/submission/:subId", async (req: Request, res: Response, next: NextF
 
         if (!user) return res.status(401).json({});
 
-        const submission = prisma.submission.findFirst({
+        const submission = await prisma.submission.findFirst({
             where: {
                 id: parseInt(subId),
                 userId: user.id

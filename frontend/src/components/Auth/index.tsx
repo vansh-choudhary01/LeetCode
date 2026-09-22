@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import LoginPage from "./LoginPage";
 import RegisterPage from "./RegisterPage";
-import axios from "axios";
+import axios from "../../utils/config"
 import { useNavigate } from "react-router-dom";
 
 export type page = 'loginUser' | 'registerUser' | 'loginAdmin';
@@ -22,20 +22,35 @@ function Auth() {
         })
     }, []);
 
-    return <>
-    <div className="authBox">
-        {page === 'loginUser' || page === 'loginAdmin' ? <LoginPage page={page}/> :  <RegisterPage /> }
+    return <div className="auth-shell">
+        <div className="auth-layout">
+            <aside className="auth-intro">
+                <div className="brand-mark" aria-hidden="true">&lt;/&gt;</div>
+                <span className="eyebrow">Greenroom practice</span>
+                <h1>Sharpen your edge, one problem at a time.</h1>
+                <p className="auth-intro-copy">A focused space to solve, submit, and grow your problem-solving instincts.</p>
+                <div className="auth-proof">
+                    <span className="proof-icon" aria-hidden="true">✓</span>
+                    <span>Build consistency with deliberate practice</span>
+                </div>
+            </aside>
 
-        {page === 'registerUser' ? <span onClick={() => setPage('loginUser')}>continue with login</span> : 
-            <>
-                {page === 'loginAdmin' ? <span onClick={() => setPage('loginUser')}>continue with user login</span> : 
-                    <span onClick={() => setPage('loginAdmin')}>continue with admin login</span>
-                }
-                <span onClick={() => setPage('registerUser')}>continue with Register</span> 
-            </>
-        }
+            <main className="auth-card">
+                {page === 'loginUser' || page === 'loginAdmin' ? <LoginPage page={page}/> : <RegisterPage />}
+
+                <div className="auth-actions">
+                    {page === 'registerUser' ? <span className="auth-link" onClick={() => setPage('loginUser')}>Continue with login</span> :
+                        <>
+                            {page === 'loginAdmin' ? <span className="auth-link" onClick={() => setPage('loginUser')}>Continue with user login</span> :
+                                <span className="auth-link" onClick={() => setPage('loginAdmin')}>Continue with admin login</span>
+                            }
+                            <span className="auth-link" onClick={() => setPage('registerUser')}>Create a new account</span>
+                        </>
+                    }
+                </div>
+            </main>
+        </div>
     </div>
-    </>
 }
 
 export default Auth;

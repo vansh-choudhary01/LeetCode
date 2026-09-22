@@ -8,6 +8,7 @@ import probRouter from './routes/problems.js'
 import adminAuthRouter from "./routes/adminAuth.js"
 import adminProbRouter from './routes/adminProb.js'
 import { authMiddleware } from './middleware/auth.js'
+import cookie_parser from "cookie-parser";
 
 const app = express();
 
@@ -16,22 +17,25 @@ app.get('/', (_req, res) => {
 })
 
 app.use(express.json());
+app.use(cookie_parser());
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-    credentials: true
+    origin: [process.env.FRONTEND_URL || 'http://localhost:5173'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'METHOD']
 }))
 
-app.use('/api', authMiddleware, userRouter);
-app.use('/api/auth/users', userAuthRouter);
+app.use('/api/auth/user', userAuthRouter);
 app.use('/api/auth/admin', adminAuthRouter);
 app.use('/api/problems', authMiddleware, probRouter);
 app.use('/api/admin/problems', authMiddleware, adminProbRouter);
+app.use('/api', authMiddleware, userRouter);
 
 app.use((err: Errback, _req: Request, res: Response, _next: NextFunction) => {
+    console.log(err);
     return res.status(500).json({
         status: false,
         message: 'Internal Server Error',
-        error: err
+        error: err.toString()
     });
 })
 

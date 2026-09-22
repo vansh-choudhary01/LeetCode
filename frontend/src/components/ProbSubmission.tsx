@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../utils/config"
 import { useEffect, useState } from "react";
 
 type submission = {
@@ -45,16 +45,26 @@ function ProbSubmission() {
         }, 2000);
     }, []);
 
-    if (isLoading) return <div>Submission</div>
+    if (isLoading) return <div className="state-card"><span className="loading-orb" aria-hidden="true"></span><span>Running your submission...</span></div>
 
-    return <>
-        <div>
-            <span>{submission?.resultStatus}</span>
-            <span>{submission?.result?.error}</span>
-            <span>{submission?.result?.pass}</span>
-            <code lang={submission?.language}>{submission?.code}</code>
+    return <div className="submission-page">
+        <header className="submission-heading">
+            <span className="eyebrow">Submission result</span>
+            <h1>Review your run</h1>
+            <span className={`result-badge ${submission?.result?.status === "Accepted" ? "result-accepted" : "result-failed"}`}>
+                {submission?.result?.status || submission?.resultStatus}
+            </span>
+        </header>
+        <div className="submission-card">
+            <div className="submission-summary">
+                <div><span>Passed</span><strong>{submission?.result?.pass || "—"}</strong></div>
+                <div><span>Language</span><strong>{submission?.language}</strong></div>
+            </div>
+            {submission?.result?.error && <div className="submission-error">{submission.result.error}</div>}
+            <div className="submission-code-header">Submitted code</div>
+            <code className="submission-code" lang={submission?.language}>{submission?.code}</code>
         </div>
-    </>
+    </div>
 }
 
 export default ProbSubmission;

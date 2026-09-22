@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../utils/config"
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { type page } from ".";
@@ -49,16 +49,18 @@ function LoginPage({ page }: {page: page}) {
         })
     }
 
-    return <>
-        <div className="box">
-            <h1>{page === "loginAdmin" ? "Admin Login Page" : "User Login Page"}</h1>
+    return <div className="auth-form-card">
+            <span className="eyebrow">{page === "loginAdmin" ? "Administrator access" : "Welcome back"}</span>
+            <h2>{page === "loginAdmin" ? "Sign in as admin" : "Sign in to continue"}</h2>
+            <p className="form-lead">Pick up where you left off and keep your streak moving.</p>
             <form onSubmit={handleSubmit}>
-                <input type="email" placeholder="Enter your email" name="email" value={formData.email} onChange={handleChange} />
-                <input type="password" placeholder="Enter your password" name="password" value={formData.password} onChange={handleChange} />
-                <button type="submit" disabled={isLoading}>Login</button>
+                <label className="field-label" htmlFor="login-email">Email address</label>
+                <input id="login-email" type="email" placeholder="you@example.com" name="email" value={formData.email} onChange={handleChange} />
+                <label className="field-label" htmlFor="login-password">Password</label>
+                <input id="login-password" type="password" placeholder="Enter your password" name="password" value={formData.password} onChange={handleChange} />
+                <button className="primary-button" type="submit" disabled={isLoading}>{isLoading ? "Signing in..." : "Sign in"}</button>
             </form>
         </div>
-    </>
 }
 
 export default LoginPage;

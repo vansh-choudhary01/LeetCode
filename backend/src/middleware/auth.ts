@@ -8,8 +8,8 @@ type AuthRequest = Request & {
 type JwtRes = JwtPayload & {id: any};
 
 
-export function authMiddleware(req: AuthRequest, res: Response, next: NextFunction) {
-    const token = req.cookies.auth_token;
+export async function authMiddleware(req: AuthRequest, res: Response, next: NextFunction) {
+    const token = req.cookies?.auth_token;
 
     if (!token) {
         return res.status(401).json({
@@ -27,7 +27,7 @@ export function authMiddleware(req: AuthRequest, res: Response, next: NextFuncti
         })
     }
 
-    const user= prisma.user.findFirst({
+    const user= await prisma.user.findFirst({
         where: {
             id: compare.id
         }

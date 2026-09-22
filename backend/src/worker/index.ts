@@ -67,7 +67,7 @@ getQueue().then((queue: Channel) => {
             //EXECUTE USER CODE IN A SENDBOX AND UPDATE DB
 
             if (result.exitCode !== 0) {
-                prisma.submission.update({
+                await prisma.submission.update({
                     where: {
                         id: submissionId
                     },
@@ -84,7 +84,7 @@ getQueue().then((queue: Channel) => {
                 const final = JSON.parse(result.stdout);
 
 
-                prisma.submission.update({
+                await prisma.submission.update({
                     where: {
                         id: submissionId
                     },

@@ -1,8 +1,9 @@
-import axios from "axios";
+import axios from "../../utils/config"
 import { useState, type ChangeEvent, type FormEvent } from "react"
 import { useNavigate } from "react-router-dom";
 
 type formDataType = {
+    name: string,
     email: string,
     password: string
 }
@@ -10,6 +11,7 @@ type formDataType = {
 type formState = [
     formData: formDataType,
     setFormData: React.Dispatch<React.SetStateAction<{
+        name: string,
         email: string;
         password: string;
     }>>
@@ -17,6 +19,7 @@ type formState = [
 
 function RegisterPage() {
     const [formData, setFormData] = useState({
+        name: "",
         email: "",
         password: ""
     }) as formState;
@@ -48,16 +51,20 @@ function RegisterPage() {
         })
     }
 
-    return <>
-        <div className="box">
-            <h1>"User Register Page"</h1>
+    return <div className="auth-form-card">
+            <span className="eyebrow">Start practicing</span>
+            <h2>Create your account</h2>
+            <p className="form-lead">Set up your account and make your next solved problem count.</p>
             <form onSubmit={handleSubmit}>
-                <input type="email" placeholder="Enter your email" name="email" value={formData.email} onChange={handleChange} />
-                <input type="password" placeholder="Enter your password" name="password" value={formData.password} onChange={handleChange} />
-                <button type="submit" disabled={isLoading}>Register</button>
+                <label className="field-label" htmlFor="register-name">Name</label>
+                <input id="register-name" type="text" placeholder="Ada Lovelace" name="name" value={formData.name} onChange={handleChange} />
+                <label className="field-label" htmlFor="register-email">Email address</label>
+                <input id="register-email" type="email" placeholder="you@example.com" name="email" value={formData.email} onChange={handleChange} />
+                <label className="field-label" htmlFor="register-password">Password</label>
+                <input id="register-password" type="password" placeholder="Create a password" name="password" value={formData.password} onChange={handleChange} />
+                <button className="primary-button" type="submit" disabled={isLoading}>{isLoading ? "Creating account..." : "Create account"}</button>
             </form>
         </div>
-    </>
 }
 
 export default RegisterPage;
