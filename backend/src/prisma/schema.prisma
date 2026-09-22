@@ -34,6 +34,8 @@ model Problem {
   description String
   functionName  String
   tests TestCase[]
+  inputType String
+  returnType String
 }
 
 model TestCase {

@@ -41,7 +41,7 @@ function RegisterPage() {
         axios.post("/api/auth/user/register", formData, {
             withCredentials: true
         }).then((res) => {
-            if (res.data.status === true) {
+            if (res.data.success === true) {
                 navigate("/problems");
             }
         }).catch((err) => {

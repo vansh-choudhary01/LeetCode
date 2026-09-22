@@ -71,9 +71,19 @@ router.get("/:probId", async (req: Request, res: Response, next: NextFunction) =
 
         const { probId } = validate.data;
 
+        // with two first testcases
         const prob = await prisma.problem.findFirst({
             where: {
                 id: parseInt(probId),
+            },
+            include: {
+                tests: {
+                    take: 2,
+                    select: {
+                        input: true,
+                        expected: true
+                    }
+                }
             },
         })
 
@@ -95,7 +105,7 @@ router.get("/:probId", async (req: Request, res: Response, next: NextFunction) =
 });
 
 const bodyValidator = z.object({
-    language: z.enum(["ts", "python"]),
+    language: z.enum(["ts", "js", "python"]),
     code: z.string()
 })
 
@@ -148,7 +158,7 @@ router.post("/submission/:probId", async (req: Request, res: Response, next: Nex
         })
 
         // send to queue for execution in sandbox
-        const queue = await getQueue();
+        const queue = await getQueue.getQueue();
 
         queue.sendToQueue(
             "tasks",

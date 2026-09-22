@@ -18,8 +18,8 @@ type submission = {
 type submissionState = [submission, React.Dispatch<React.SetStateAction<submission>>]
 
 function getSubmission() {
-    const probId = window.location.origin.split("/problems/")[1].split("/")[0];
-    const submissionId = window.location.origin.split("/problems/")[1].split("/")[1];
+    const probId = window.location.pathname.split("/problems/")[1].split("/")[0];
+    const submissionId = window.location.pathname.split("/problems/")[1].split("/")[1];
 
     return { probId, submissionId };
 }

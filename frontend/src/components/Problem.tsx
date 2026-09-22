@@ -2,8 +2,14 @@ import { useQuery, type QueryObserverResult, type RefetchOptions } from "@tansta
 import axios from "../utils/config"
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Editor from "react-simple-code-editor";
+import * as EditorModule from "react-simple-code-editor";
 import Prism from "prismjs";
+import "prismjs/components/prism-python";
+import "prismjs/components/prism-typescript";
+
+const Editor = (EditorModule.default as unknown as {
+    default?: typeof EditorModule.default;
+}).default ?? EditorModule.default;
 
 export type problem = {
     id: number,
@@ -11,7 +17,11 @@ export type problem = {
     description: string,
     functionName: string,
     returnType: string,
-    inputType: string
+    inputType: string,
+    tests: {
+        input: any,
+        expected: any
+    }[]
 }
 
 type queryResponse = {
@@ -21,7 +31,13 @@ type queryResponse = {
     refetch: (options?: RefetchOptions | undefined) => Promise<QueryObserverResult<any, Error>>
 }
 
-type lang = 'ts' | 'python'
+type lang = 'ts' | 'js' | 'python'
+
+const prismLanguage: Record<lang, "typescript" | "javascript" | "python"> = {
+    ts: "typescript",
+    js: "javascript",
+    python: "python",
+};
 
 function findProbId() {
     const probId = window.location.pathname.split("/problems/")[1];
@@ -32,13 +48,20 @@ function findProbId() {
 function generateBaseCode(lang: lang, functionName: problem["functionName"], returnType: problem["returnType"], inputType: problem["inputType"]) {
     switch (lang) {
         case "ts": return `class Solution {
-  public ${returnType} ${functionName}(${inputType}) {
+  public ${functionName}(${inputType}): ${returnType} {
+    // write your code here
+  }
+}
+`       
+        case "js": return `class Solution {
+  ${functionName}(${inputType}) {
     // write your code here
   }
 }
 `
-        case "python": `class Solution:
+        case "python": return `class Solution:
   def ${functionName}(${inputType}) -> ${returnType}:
+    # write your code here
 `
     }
 }
@@ -47,7 +70,7 @@ type langState = [lang, React.Dispatch<React.SetStateAction<lang>>]
 
 function Problem() {
     const probId = findProbId();
-    const [language, setLanguage] = useState("ts") as langState;
+    const [language, setLanguage] = useState("js") as langState;
     const [code, setCode] = useState('');
     const { data, isLoading, error, refetch } = useQuery({
         queryKey: [`prob/${probId}`],
@@ -66,12 +89,19 @@ function Problem() {
         refetch();
     }, []);
 
+    useEffect(() => {
+        if(!data) return;
+        setCode(generateBaseCode(language, data.functionName, data.returnType, data.inputType) as string);
+    }, [data, language]);
+
     if (isLoading || !data) return <div className="state-card"><span className="loading-orb" aria-hidden="true"></span><span>Loading challenge...</span></div>
     if (error) return <div className="state-card state-error"><span className="state-icon" aria-hidden="true">!</span><span>Error - {`${error}`}</span></div>
 
     function handleSubmit() {
-        axios.post(`/api/problems//submission/${probId}`, {
+        axios.post(`/api/problems/submission/${probId}`, {
             language, code
+        }, {
+            withCredentials: true
         }).then((res) => {
             if (res.status === 200) {
                 navigate(`/problems/${probId}/${res.data.data.id}`);
@@ -81,8 +111,6 @@ function Problem() {
         })
     }
 
-    console.log(data);
-
     return <div className="problem-page">
         <aside className="problem-description">
             <div className="problem-heading">
@@ -90,6 +118,23 @@ function Problem() {
                 <h1>{data.title}</h1>
             </div>
             <div className="description-body">{data.description}</div>
+            <div className="problem-tests">
+                <span className="testcases-title">Test cases</span>
+                <div className="testcases-list">
+                    {data.tests.map((test, index) => {
+                        return <div key={index} className="testcase">
+                            <div className="testcase-input">
+                                <span className="testcase-label">Input</span>
+                                <pre>{JSON.stringify(test.input)}</pre>
+                            </div>
+                            <div className="testcase-expected">
+                                <span className="testcase-label">Expected</span>
+                                <pre>{JSON.stringify(test.expected)}</pre>
+                            </div>
+                        </div>
+                    })}
+                </div>
+            </div>
             <div className="problem-tip">
                 <span className="tip-icon" aria-hidden="true">✦</span>
                 <span>Read the constraints carefully before you code.</span>
@@ -106,6 +151,7 @@ function Problem() {
                     <span>Language</span>
                     <select value={language} onChange={(e) => setLanguage(e.target.value as lang)}>
                         <option value="ts">ts</option>
+                        <option value="js">js</option>
                         <option value="python">python</option>
                     </select>
                 </label>
@@ -120,7 +166,11 @@ function Problem() {
                     lang={language}
                     value={code}
                     onValueChange={code => setCode(code)}
-                    highlight={code => Prism.highlight(code, Prism.languages.js, language)}
+                    highlight={source => {
+                        const languageName = prismLanguage[language];
+                        return Prism.highlight(source, Prism.languages[languageName], languageName);
+                    }}
+                    preClassName={`code-editor language-${prismLanguage[language]}`}
                     padding={10}
                     style={{
                         fontFamily: '"Fira code", "Fira Mono", monospace',

@@ -20,7 +20,9 @@ const problems: Prisma.ProblemCreateInput[] = [
         },
       ],
     },
-    functionName: "twoSum"
+    functionName: "twoSum",
+    inputType: '{ nums: [], target: number }',
+    returnType: "number[]"
   },
   {
     title: "Valid Parentheses",
@@ -38,7 +40,9 @@ const problems: Prisma.ProblemCreateInput[] = [
         },
       ],
     },
-    functionName: "validParentheses"
+    functionName: "validParentheses",
+    inputType: '{ value: string }',
+    returnType: "boolean"
   },
   {
     title: "Reverse String",
@@ -56,7 +60,9 @@ const problems: Prisma.ProblemCreateInput[] = [
         },
       ],
     },
-    functionName: "reverseString"
+    functionName: "reverseString",
+    inputType: '{ value: string[] }',
+    returnType: "void"
   },
 ];
 

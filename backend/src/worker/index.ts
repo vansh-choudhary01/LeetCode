@@ -3,17 +3,19 @@ import getQueue from "../RabitMQ/db.js";
 import prisma from "../lib/prisma.js";
 import { runCode } from "../e2b/createSandbox.js";
 import { TestCase } from "../generated/prisma/client.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 function generateExecutableCode(functionName: string, language: string, code: string, testCases: TestCase[]) {
     switch (language) {
-        case "ts":
-            return `
-            
-            let i = 0;
+        case "js":
+            return `let i = 0;
 
             try {
                 ${code}
-                for(i; i < ${testCases.length}; i++) {
+
+                const testCases = JSON.parse('${JSON.stringify(testCases)}');
+                for(i; i < testCases.length; i++) {
                     const test = testCases[i];
 
                     const solution = new Solution();
@@ -25,30 +27,29 @@ function generateExecutableCode(functionName: string, language: string, code: st
                 }
 
                 if (i !== testCases.length) {
-                    console.log('{
+                    console.log(JSON.stringify({
                         status: 'Failed',
                         pass: i/testCases.length,
                         error: 'test case failed'
-                    }')
+                    }))
                 } else {
-                    console.log('{
+                    console.log(JSON.stringify({
                         status: 'Accepted',
                         pass: testCases.length/testCases.length
-                    }')
+                    }))
                 }
             } catch (err) {
-                console.log('{
+                console.log(JSON.stringify({
                     status: 'Failed',
                     pass: i/testCases.length,
                     error: err
-                }')
+                }))
             }
             `
     }
-
 }
 
-getQueue().then((queue: Channel) => {
+getQueue.getQueue().then((queue: Channel) => {
     queue.consume("tasks", (async (msg) => {
         if (msg !== null) {
             console.log(msg.content.toString());
@@ -56,17 +57,16 @@ getQueue().then((queue: Channel) => {
 
             const tests = await prisma.testCase.findMany({
                 where: {
-                    problemId: probId
+                    problemId: parseInt(probId)
                 }
             })
 
             const executableCode = generateExecutableCode(functionName, language, code, tests)!;
 
-
             const result = await runCode(executableCode);
             //EXECUTE USER CODE IN A SENDBOX AND UPDATE DB
 
-            if (result.exitCode !== 0) {
+            if (result.exitCode !== 0 || result.stderr !== '') {
                 await prisma.submission.update({
                     where: {
                         id: submissionId
@@ -81,7 +81,11 @@ getQueue().then((queue: Channel) => {
                     }
                 })
             } else {
-                const final = JSON.parse(result.stdout);
+                const final = result.stdout !== '' ? JSON.parse(result.stdout) : {
+                    status: 'Failed',
+                    pass: '0/0',
+                    error: 'no output'
+                }
 
 
                 await prisma.submission.update({

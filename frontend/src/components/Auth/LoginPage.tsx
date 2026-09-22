@@ -39,7 +39,7 @@ function LoginPage({ page }: {page: page}) {
         axios.post(page === "loginAdmin" ? "/api/auth/admin/login" : "/api/auth/user/login", formData, {
             withCredentials: true
         }).then((res) => {
-            if (res.data.status === true) {
+            if (res.data.success === true) {
                 navigate("/problems");
             }
         }).catch((err) => {

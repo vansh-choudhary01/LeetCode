@@ -33,6 +33,13 @@ export async function authMiddleware(req: AuthRequest, res: Response, next: Next
         }
     })
 
+    if (!user) {
+        return res.status(401).json({
+            status: false,
+            message: "Unauthorized"
+        })
+    }
+
     req.user = user;
     req.isAdmin = compare.role === 'admin';
 

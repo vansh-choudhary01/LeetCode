@@ -26,4 +26,4 @@ class DB {
 }
 
 
-export default DB.getInstance().getQueue;
+export default DB.getInstance()

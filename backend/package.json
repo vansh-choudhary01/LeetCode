@@ -9,7 +9,9 @@
     "seed:admin": "tsx src/seed/admin.ts",
     "build": "tsc",
     "dev": "tsx watch src/index.ts",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "dev:worker": "tsx watch src/worker/index.ts",
+    "start:worker": "node src/worker/index.ts"
   },
   "type": "module",
   "keywords": [],

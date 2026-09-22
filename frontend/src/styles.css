@@ -798,6 +798,59 @@ h2 {
   white-space: pre;
 }
 
+.editor-surface .token.comment,
+.editor-surface .token.prolog,
+.editor-surface .token.doctype,
+.editor-surface .token.cdata {
+  color: #6f9d7b;
+}
+
+.editor-surface .token.punctuation {
+  color: #b8d8c0;
+}
+
+.editor-surface .token.property,
+.editor-surface .token.tag,
+.editor-surface .token.boolean,
+.editor-surface .token.number,
+.editor-surface .token.constant,
+.editor-surface .token.symbol {
+  color: #f3b56d;
+}
+
+.editor-surface .token.selector,
+.editor-surface .token.attr-name,
+.editor-surface .token.string,
+.editor-surface .token.char,
+.editor-surface .token.builtin,
+.editor-surface .token.inserted {
+  color: #9fe3ad;
+}
+
+.editor-surface .token.operator,
+.editor-surface .token.entity,
+.editor-surface .token.url,
+.editor-surface .token.variable {
+  color: #72d8d2;
+}
+
+.editor-surface .token.atrule,
+.editor-surface .token.attr-value,
+.editor-surface .token.keyword {
+  color: #d7a7ed;
+}
+
+.editor-surface .token.function,
+.editor-surface .token.function-name,
+.editor-surface .token.class-name {
+  color: #8fc7ff;
+}
+
+.editor-surface .token.regex,
+.editor-surface .token.important {
+  color: #f28f8f;
+}
+
 .editor-footer {
   align-items: center;
 }
