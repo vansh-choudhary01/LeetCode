@@ -46,6 +46,15 @@ function findProbId() {
     return probId;
 }
 
+function normalizeInput(input: problem["inputType"], lang: lang) {
+    switch (lang) {
+        case "ts":
+            return input;
+        case "js":
+            return '{ ' + input.split("{")[1].split("}")[0].split(",").map((s: string) => s.split(":")[0].trim()).join(", ") + ' }';
+    }
+}
+
 function generateBaseCode(lang: lang, functionName: problem["functionName"], returnType: problem["returnType"], inputType: problem["inputType"]) {
     switch (lang) {
         case "ts": return `class Solution {
@@ -93,7 +102,7 @@ function Problem() {
 
     useEffect(() => {
         if(!data) return;
-        setCode(generateBaseCode(language, data.functionName, data.returnType, data.inputType) as string);
+        setCode(generateBaseCode(language, data.functionName, data.returnType, normalizeInput(data.inputType, language) as string) as string);
     }, [data, language]);
 
     if (isLoading || !data) return <div className="state-card"><span className="loading-orb" aria-hidden="true"></span><span>Loading challenge...</span></div>

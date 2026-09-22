@@ -12,6 +12,8 @@ const bodyValidator = z.object({
         expected: z.any()
     })),
     functionName: z.string(),
+    returnType: z.string(),
+    inputType: z.string()
 })
 
 router.post("/", async (req: Request, res: Response, next: NextFunction) => {
@@ -35,7 +37,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
             })
         }
 
-        const { title, description, tests, functionName } = validate.data;
+        const { title, description, tests, functionName, returnType, inputType } = validate.data;
 
         const problem = {
             title,
@@ -44,6 +46,8 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
                 create: tests
             },
             functionName: functionName,
+            returnType: returnType,
+            inputType: inputType
         }
 
         await prisma.problem.create({

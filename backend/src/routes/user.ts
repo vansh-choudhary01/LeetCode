@@ -21,4 +21,18 @@ router.get("/me", (req: Request, res: Response, next: NextFunction) => {
     })
 })
 
+router.get("/logout", (req: Request, res: Response, next: NextFunction) => {
+    res.clearCookie("auth_token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 24 * 60 * 60 * 1000,
+        path: "/"
+    });
+
+    return res.status(200).json({
+        success: true,
+        message: "user logged out successfully"
+    })
+})
+
 export default router;

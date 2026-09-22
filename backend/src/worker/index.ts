@@ -11,10 +11,10 @@ function generateExecutableCode(functionName: string, language: string, code: st
         case "js":
             return `let i = 0;
 
+            const testCases = JSON.parse('${JSON.stringify(testCases)}');
             try {
                 ${code}
 
-                const testCases = JSON.parse('${JSON.stringify(testCases)}');
                 let err = '';
                 for(i; i < testCases.length; i++) {
                     const test = testCases[i];
@@ -48,7 +48,7 @@ function generateExecutableCode(functionName: string, language: string, code: st
                 console.log(JSON.stringify({
                     status: 'Failed',
                     pass: i + '/' + testCases.length,
-                    error: err
+                    error: JSON.stringify(err)
                 }))
             }
             `
