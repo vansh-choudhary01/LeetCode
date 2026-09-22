@@ -2,8 +2,9 @@ import express, {type Request, type Response, type NextFunction, type Errback} f
 import dotenv from 'dotenv';
 dotenv.config();
 import cors from 'cors';
+import userRouter from "./routes/user.js"
+import userAuthRouter from './routes/userAuth.js';
 import probRouter from './routes/problems.js'
-import userRouter from './routes/user.js';
 import adminAuthRouter from "./routes/adminAuth.js"
 import adminProbRouter from './routes/adminProb.js'
 import { authMiddleware } from './middleware/auth.js'
@@ -20,7 +21,8 @@ app.use(cors({
     credentials: true
 }))
 
-app.use('/api/auth/users', userRouter);
+app.use('/api', authMiddleware, userRouter);
+app.use('/api/auth/users', userAuthRouter);
 app.use('/api/auth/admin', adminAuthRouter);
 app.use('/api/problems', authMiddleware, probRouter);
 app.use('/api/admin/problems', authMiddleware, adminProbRouter);

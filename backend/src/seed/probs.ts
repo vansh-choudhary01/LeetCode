@@ -20,18 +20,7 @@ const problems: Prisma.ProblemCreateInput[] = [
         },
       ],
     },
-    functionName: "twoSum",
-    baseCode: {
-      ts: `class Solution {
-  public int[] twoSum(int[] nums, int target) {
-    // write your code here
-  }
-}
-`,
-      python: `class Solution:
-  def twoSum(self, nums: list[int], target: int) -> list[int]:
-`
-    }
+    functionName: "twoSum"
   },
   {
     title: "Valid Parentheses",
@@ -49,18 +38,7 @@ const problems: Prisma.ProblemCreateInput[] = [
         },
       ],
     },
-    functionName: "validParentheses",
-    baseCode: {
-      ts: `class Solution {
-  public boolean validParentheses(String s) {
-    // write your code here
-  }
-}
-`,
-      python: `class Solution:
-  def validParentheses(self, s: str) -> bool:
-`
-    }
+    functionName: "validParentheses"
   },
   {
     title: "Reverse String",
@@ -78,18 +56,7 @@ const problems: Prisma.ProblemCreateInput[] = [
         },
       ],
     },
-    functionName: "reverseString",
-    baseCode: {
-      ts: `class Solution {
-  public void reverseString(char[] s) {
-    // write your code here
-  }
-}
-`,
-      python: `class Solution:
-  def reverseString(self, s: list[str]) -> None:
-`
-    }
+    functionName: "reverseString"
   },
 ];
 

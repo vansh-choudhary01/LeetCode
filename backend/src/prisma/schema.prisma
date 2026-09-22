@@ -33,7 +33,6 @@ model Problem {
   title String
   description String
   functionName  String
-  baseCode Json
   tests TestCase[]
 }
 

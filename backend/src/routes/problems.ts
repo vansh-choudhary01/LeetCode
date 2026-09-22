@@ -188,7 +188,7 @@ router.get("/submission", async (req: Request, res: Response, next: NextFunction
 
         if (!user) return res.status(401).json({});
 
-        const submission = prisma.submission.findMany({
+        const submissions = prisma.submission.findMany({
             where: {
                 userId: user.id,
                 problemId: probId
@@ -198,7 +198,7 @@ router.get("/submission", async (req: Request, res: Response, next: NextFunction
         return res.status(200).json({
             status: true,
             message: "submission fetched successfully",
-            data: submission
+            data: submissions
         });
     } catch (err) {
         next(err);
