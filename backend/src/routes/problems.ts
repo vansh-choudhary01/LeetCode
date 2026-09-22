@@ -176,15 +176,15 @@ router.post("/submission/:probId", async (req: Request, res: Response, next: Nex
     }
 })
 
-const queryValidator = z.object({
+const paramValidator2 = z.object({
     probId: z.string()
 })
 
-router.get("/submission", async (req: Request, res: Response, next: NextFunction) => {
+router.get("/:probId/submission", async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const query = req.query
+        const params = req.params;
 
-        const validate = queryValidator.safeParse(query);
+        const validate = paramValidator2.safeParse(params);
 
         if (!validate.success) {
             return res.status(401).json({

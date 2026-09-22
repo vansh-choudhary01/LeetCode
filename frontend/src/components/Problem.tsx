@@ -6,6 +6,7 @@ import * as EditorModule from "react-simple-code-editor";
 import Prism from "prismjs";
 import "prismjs/components/prism-python";
 import "prismjs/components/prism-typescript";
+import ProbSubmissions from "./ProbSubmissions";
 
 const Editor = (EditorModule.default as unknown as {
     default?: typeof EditorModule.default;
@@ -69,6 +70,7 @@ function generateBaseCode(lang: lang, functionName: problem["functionName"], ret
 type langState = [lang, React.Dispatch<React.SetStateAction<lang>>]
 
 function Problem() {
+    const [rightPanelType, setRightPanelType] = useState<"editor" | "submissions">("editor");
     const probId = findProbId();
     const [language, setLanguage] = useState("js") as langState;
     const [code, setCode] = useState('');
@@ -117,6 +119,12 @@ function Problem() {
                 <span className="eyebrow">Challenge {data.id}</span>
                 <h1>{data.title}</h1>
             </div>
+            <div>
+                <div className="problem-actions">
+                    <button disabled={rightPanelType === "editor"} className={`secondary-button ${rightPanelType === "editor" ? "active" : ""}`} onClick={() => setRightPanelType("editor")}>Editor</button>
+                    <button disabled={rightPanelType === "submissions"} className={`secondary-button ${rightPanelType === "submissions" ? "active" : ""}`} onClick={() => setRightPanelType("submissions")}>Submissions</button>
+                </div>
+            </div>
             <div className="description-body">{data.description}</div>
             <div className="problem-tests">
                 <span className="testcases-title">Test cases</span>
@@ -141,18 +149,19 @@ function Problem() {
             </div>
         </aside>
 
-        <section className="editor-panel">
-            <div className="editor-toolbar">
-                <div>
-                    <span className="editor-title">Solution workspace</span>
+        {rightPanelType === "editor" && (
+            <section className="editor-panel">
+                <div className="editor-toolbar">
+                    <div>
+                        <span className="editor-title">Solution workspace</span>
                     <span className="editor-subtitle">Write, submit, iterate</span>
                 </div>
                 <label className="language-control">
                     <span>Language</span>
                     <select value={language} onChange={(e) => setLanguage(e.target.value as lang)}>
-                        <option value="ts">ts</option>
                         <option value="js">js</option>
-                        <option value="python">python</option>
+                        <option value="ts" disabled>ts</option>
+                        <option value="python" disabled>python</option>
                     </select>
                 </label>
             </div>
@@ -184,6 +193,11 @@ function Problem() {
                 <button className="primary-button submit-button" onClick={handleSubmit}>Submit solution <span aria-hidden="true">→</span></button>
             </div>
         </section>
+        )}
+
+        {rightPanelType === "submissions" && (
+            <ProbSubmissions />
+        )}
     </div>
 }
 

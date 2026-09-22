@@ -11,7 +11,7 @@ export async function runCode(code: string) {
         console.error(err)
         result = {
             stdout: "",
-            stderr: "Error running code",
+            stderr: "Error running code" + JSON.stringify(err),
             exitCode: 1
         }
     } finally {

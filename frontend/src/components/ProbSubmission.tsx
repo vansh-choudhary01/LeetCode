@@ -1,7 +1,7 @@
 import axios from "../utils/config"
 import { useEffect, useState } from "react";
 
-type submission = {
+export type submission = {
   id: number,
   userId: number,
   problemId: string,
@@ -34,13 +34,24 @@ function ProbSubmission() {
             try {
                 const res = await axios.get(`/api/problems/submission/${submissionId}`);
 
-                if (res.data.data.resultStatus) {
+                if (res.data.data.resultStatus === true || res.data.data.resultStatus === false) {
                     clearInterval(intervalId);
                     setSubmission(res.data.data);
                     setIsLoading(false);
                 }
             } catch (err) {
                 console.error(err);
+                clearInterval(intervalId);
+                setIsLoading(false);
+                setSubmission({
+                    id: 0,
+                    userId: 0,
+                    problemId: probId,
+                    code: '',
+                    language: '',
+                    resultStatus: undefined,
+                    result: undefined
+                });
             }
         }, 2000);
     }, []);
@@ -57,7 +68,7 @@ function ProbSubmission() {
         </header>
         <div className="submission-card">
             <div className="submission-summary">
-                <div><span>Passed</span><strong>{submission?.result?.pass || "—"}</strong></div>
+                <div><span>Passed</span><strong>{submission?.result?.pass || "0"}</strong></div>
                 <div><span>Language</span><strong>{submission?.language}</strong></div>
             </div>
             {submission?.result?.error && <div className="submission-error">{submission.result.error}</div>}

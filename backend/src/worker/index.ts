@@ -15,13 +15,19 @@ function generateExecutableCode(functionName: string, language: string, code: st
                 ${code}
 
                 const testCases = JSON.parse('${JSON.stringify(testCases)}');
+                let err = '';
                 for(i; i < testCases.length; i++) {
                     const test = testCases[i];
 
                     const solution = new Solution();
                     const result = solution.${functionName}(test.input);
 
-                    if (result !== test.expected) {
+                    if (JSON.stringify(result) !== JSON.stringify(test.expected)) {
+                        err = JSON.stringify({
+                            input: test.input,
+                            expected: test.expected,
+                            got: result
+                        })
                         break;
                     }
                 }
@@ -29,19 +35,19 @@ function generateExecutableCode(functionName: string, language: string, code: st
                 if (i !== testCases.length) {
                     console.log(JSON.stringify({
                         status: 'Failed',
-                        pass: i/testCases.length,
-                        error: 'test case failed'
+                        pass: i + '/' + testCases.length,
+                        error: 'test case failed' + err
                     }))
                 } else {
                     console.log(JSON.stringify({
                         status: 'Accepted',
-                        pass: testCases.length/testCases.length
+                        pass: testCases.length + '/' + testCases.length
                     }))
                 }
             } catch (err) {
                 console.log(JSON.stringify({
                     status: 'Failed',
-                    pass: i/testCases.length,
+                    pass: i + '/' + testCases.length,
                     error: err
                 }))
             }

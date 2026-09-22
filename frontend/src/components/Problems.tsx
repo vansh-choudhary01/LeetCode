@@ -18,8 +18,8 @@ function Problems() {
         limit: 10,
         completed: undefined
     }) as filterState;
+    const navigate = useNavigate();
 
-    
 
     return <div className="problems-page">
         <header className="problems-header">
@@ -28,35 +28,35 @@ function Problems() {
                 <h1>Practice problems</h1>
                 <p>Choose a challenge, write a solution, and keep your momentum.</p>
             </div>
-            <div className="filter-control">
-                <label htmlFor="completion-filter">Show</label>
-                <select name="" id="completion-filter" value={filter.completed || ""} onChange={(e) => setFilter(prev => {return {...prev, completed: e.target.value === ""? undefined: e.target.value as "Solved" | "Unsolved" }})}>
-                <option value="">All</option>
-                <option value="Solved">Solved</option>
-                <option value="Unsolved">Unsolved</option>
-                </select>
+            <div>
+                <span className="profile-card" onClick={() => navigate("/profile")}>
+                    Profile
+                </span>
+                <div className="filter-control">
+                    <label htmlFor="completion-filter">Show</label>
+                    <select name="" id="completion-filter" value={filter.completed || ""} onChange={(e) => setFilter(prev => { return { ...prev, completed: e.target.value === "" ? undefined : e.target.value as "Solved" | "Unsolved" } })}>
+                        <option value="">All</option>
+                        <option value="Solved">Solved</option>
+                        <option value="Unsolved">Unsolved</option>
+                    </select>
+                </div>
             </div>
         </header>
-        <ProbsList filter={filter}/>
-        <nav className="pagination" aria-label="Problem pages">
-            <button className="secondary-button" onClick={() => setFilter(prev => {return {...prev, page: prev.page - 1}})} disabled={filter.page === 1}>Previous</button>
-            <span>Page {filter.page}</span>
-            <button className="secondary-button" onClick={() => setFilter(prev => {return {...prev, page: prev.page + 1}})}>Next</button>
-        </nav>
+        <ProbsList filter={filter} setFilter={setFilter} />
     </div>
 }
 
 type queryResponse = {
-    data: {probs: problem[], total: number}
+    data: { probs: problem[], total: number }
     isLoading: boolean,
     error: Error | null
 }
 
-export function ProbsList({filter}: {filter: filterType}) {
-    const {data, isLoading, error}  = useQuery({
+export function ProbsList({ filter, setFilter }: { filter: filterType; setFilter: React.Dispatch<React.SetStateAction<filterType>> }) {
+    const { data, isLoading, error } = useQuery({
         queryKey: ["problems"],
         queryFn: async () => {
-            const res =  await axios.get("/api/problems", {
+            const res = await axios.get("/api/problems", {
                 withCredentials: true,
                 params: {
                     page: filter.page,
@@ -79,14 +79,21 @@ export function ProbsList({filter}: {filter: filterType}) {
         return <div className="state-card state-error"><span className="state-icon" aria-hidden="true">!</span><span>Error - {`${error}`}</span></div>
     }
 
-    return <div className="problem-grid">
-            {data.probs.map((prob) => 
-                <Problem prob={prob}/>
+    return <>
+        <div className="problem-grid">
+            {data.probs.map((prob) =>
+                <Problem prob={prob} />
             )}
-    </div>
+        </div>
+        <nav className="pagination" aria-label="Problem pages">
+            <button className="secondary-button" onClick={() => setFilter(prev => { return { ...prev, page: prev.page - 1 } })} disabled={filter.page === 1}>Previous</button>
+            <span>Page {filter.page}</span>
+            <button className="secondary-button" onClick={() => setFilter(prev => { return { ...prev, page: prev.page + 1 } })} disabled={data.total <= filter.page * filter.limit}>Next</button>
+        </nav>
+    </>
 }
 
-function Problem({prob}: {prob: problem}) {
+function Problem({ prob }: { prob: problem }) {
     const navigate = useNavigate();
     return <div className="problem-card" key={prob.id} onClick={() => navigate(`/problems/${prob.id}`)}>
         <span className="problem-number">{String(prob.id).padStart(2, "0")}</span>

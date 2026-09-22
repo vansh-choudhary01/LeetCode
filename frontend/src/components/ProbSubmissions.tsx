@@ -1,0 +1,52 @@
+import { useQuery } from "@tanstack/react-query";
+import axios from "../utils/config"
+import type { submission } from "./ProbSubmission";
+
+export function getProbId() {
+    const probId = window.location.pathname.split("/problems/")[1].split("/")[0];
+    return probId;
+}
+
+function ProbSubmissions() {
+    const { data, isLoading, error } = useQuery({
+        queryKey: ["submissions"],
+        queryFn: async () => {
+            const probId = getProbId();
+            const res = await axios.get(`/api/problems/${probId}/submission`, {
+                withCredentials: true
+            })
+
+            return res.data.data;
+        }
+    }) as { data: submission[], isLoading: boolean, error: Error | null }
+
+    if (isLoading) return <div className="state-card"><span className="loading-orb" aria-hidden="true"></span><span>Loading submissions...</span></div>
+
+    if (error) {
+        return <div className="state-card state-error"><span className="state-icon" aria-hidden="true">!</span><span>Error - {`${error}`}</span></div>
+    }
+
+    if (data.length === 0) {
+        return <div className="state-card"><span className="state-icon" aria-hidden="true">!</span><span>No submissions found</span></div>
+    }
+    
+    return <div className="submissions-page">
+        <header className="submissions-heading">
+            <span className="eyebrow">Submissions</span>
+            <h1>Review your submissions</h1>
+        </header>
+        <div className="submissions-grid">
+            {data.map((submission) => {
+                return <div className="submission-card" key={submission?.id}>
+                    <div className="submission-summary">
+                        <div><span>Language</span><strong>{submission?.language}</strong></div>
+                        <div><span>Result</span><strong>{submission?.result?.status || submission?.resultStatus}</strong></div>
+                    </div>
+                    <a href={`/problems/${submission?.problemId}/${submission?.id}`} className="secondary-button">View submission</a>
+                </div>
+            })}
+        </div>
+    </div>
+}
+
+export default ProbSubmissions;
